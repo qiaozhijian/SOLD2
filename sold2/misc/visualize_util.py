@@ -49,7 +49,7 @@ def plot_junctions(input_image, junctions, junc_size=3, color=None):
     
     # Round and convert junctions to int (and check the boundary)
     H, W = image.shape[:2]
-    junctions = (np.round(junctions)).astype(np.int)
+    junctions = (np.round(junctions)).astype(np.int32)
     junctions[junctions < 0] = 0 
     junctions[junctions[:, 0] >= H, 0] = H-1  # (first dim) max bounded by H-1
     junctions[junctions[:, 1] >= W, 1] = W-1  # (second dim) max bounded by W-1
@@ -146,7 +146,7 @@ def plot_line_segments(input_image, junctions, line_map, junc_size=3,
     
     # Draw segment pairs
     for idx in range(segments.shape[0]):
-        seg = np.round(segments[idx, :]).astype(np.int)
+        seg = np.round(segments[idx, :]).astype(np.int32)
         # Decide the color
         if color != "random":
             color = tuple(color)
@@ -165,7 +165,7 @@ def plot_line_segments(input_image, junctions, line_map, junc_size=3,
     # Only plot the junctions which are part of a line segment
     else:
         for idx in range(segments.shape[0]):
-            seg = np.round(segments[idx, :]).astype(np.int) # Already in HW format.
+            seg = np.round(segments[idx, :]).astype(np.int32) # Already in HW format.
             cv2.circle(image, tuple(seg[:2]), radius=junc_size, 
                     color=(0, 255., 0), thickness=3)
             cv2.circle(image, tuple(seg[2:]), radius=junc_size, 
@@ -266,7 +266,7 @@ def plot_images(imgs, titles=None, cmaps='gray', dpi=100, size=6, pad=.5):
     if not isinstance(cmaps, (list, tuple)):
         cmaps = [cmaps] * n
     figsize = (size*n, size*3/4) if size is not None else None
-    fig, ax = plt.subplots(1, n, figsize=figsize, dpi=dpi)
+    fig, ax = plt.subplots(n, 1, figsize=figsize, dpi=dpi)
     if n == 1:
         ax = [ax]
     for i in range(n):
@@ -368,6 +368,7 @@ def plot_lines(lines, line_colors='orange', point_colors='cyan',
         pts = l.reshape(-1, 2)
         a.scatter(pts[:, 0], pts[:, 1],
                   c=pc, s=ps, linewidths=0, zorder=2)
+    plt.show()
 
 
 def plot_line_matches(kpts0, kpts1, color=None, lw=1.5, indices=(0, 1), a=1.):
@@ -405,6 +406,7 @@ def plot_line_matches(kpts0, kpts1, color=None, lw=1.5, indices=(0, 1), a=1.):
     # freeze the axes to prevent the transform to change
     ax0.autoscale(enable=False)
     ax1.autoscale(enable=False)
+    plt.show()
 
 
 def plot_color_line_matches(lines, correct_matches=None,
@@ -442,6 +444,7 @@ def plot_color_line_matches(lines, correct_matches=None,
             zorder=1, transform=fig.transFigure, c=colors[i],
             alpha=alphas[i], linewidth=lw) for i in range(n_lines)]
 
+    plt.show()
 
 def plot_color_lines(lines, correct_matches, wrong_matches,
                      lw=2, indices=(0, 1)):
